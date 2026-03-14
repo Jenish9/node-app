@@ -1,0 +1,29 @@
+- name: Deploy NodeJS Application
+  hosts: web
+  become: yes
+
+  tasks:
+
+  - name: Update packages
+    apt:
+      update_cache: yes
+
+  - name: Install NodeJS and Git
+    shell: |
+      curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+      apt-get install -y nodejs git
+
+  - name: Clone GitHub repository
+    git:
+      repo: https://github.com/Jenish9/node-app.git
+      dest: /home/ubuntu/node-app
+
+  - name: Install dependencies
+    command: npm install
+    args:
+      chdir: /home/ubuntu/node-app
+
+  - name: Start NodeJS app
+    shell: nohup npm start &
+    args:
+      chdir: /home/ubuntu/node-app
